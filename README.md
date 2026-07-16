@@ -1,5 +1,7 @@
 # Agent Skills
 
+[中文](README.zh-CN.md) | English
+
 `@murphy-lab/agent-skills` installs reusable Agent skills for Codex, Claude Code, and Cursor.
 
 Bundled skills:
