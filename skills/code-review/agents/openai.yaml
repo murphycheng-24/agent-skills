@@ -1,0 +1,4 @@
+interface:
+  display_name: "提交区间代码审查"
+  short_description: "审查 Git 提交区间并输出 P0/P1/P2 风险报告"
+  default_prompt: "Use $code-review to review the changes from <start-commit> to <end-commit>."
