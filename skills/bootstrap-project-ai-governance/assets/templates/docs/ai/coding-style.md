@@ -38,7 +38,14 @@
 
 ## Git
 
-- {{GIT_RULE}}
+- commit message 格式：`<type>(<scope>): <subject>`。
+- `type` 使用 `feat`、`fix`、`refactor`、`docs`、`test`、`chore`、`style`、`perf` 或 `revert`。
+- `scope` 可选，使用仓库中真实存在的业务域或模块名。
+- `subject` 使用项目工作语言，不超过 72 个字符，不以句号结尾。
+- 多文件行为变化、架构调整或迁移补充 body，说明核心变化、兼容性影响和验证方式。
+- Agent 生成 message 前读取 staged diff；禁止在 message 中署名 AI、模型名或 Agent 工具名。
+- 规则来源与项目差异：{{GIT_RULE_SOURCE_AND_DIFFERENCE}}
+- 执行等级与证据：{{GIT_ENFORCEMENT_LEVEL_AND_EVIDENCE}}
 
 ## 已知分歧
 

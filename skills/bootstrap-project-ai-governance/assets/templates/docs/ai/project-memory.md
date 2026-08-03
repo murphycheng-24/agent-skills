@@ -1,26 +1,16 @@
 # {{PROJECT_NAME}} 项目记忆
 
-> 本文件只保存当前有效、经确认且需要跨会话复用的项目事实；使用规则以 [`AGENTS.md`](../../AGENTS.md#项目记忆协议) 为准，历史变化由 Git 保存。
+> 本文件只保存当前有效、经确认且需要跨会话复用的项目事实；协议以 [`AGENTS.md`](../../AGENTS.md#项目记忆协议) 为准，历史变化由 Git 保存。
 
-## 当前需求与期望行为
+事实数据块由 `project-memory` CLI 管理，Agent 不得直接编辑。稳定事实应迁移到 API 文档、测试、coding-style 或业务规范，并从数据块删除。
 
-暂无。
+<!-- project-memory-data:start -->
 
-## API 与数据契约
+```json
+{
+  "protocolVersion": "0.2",
+  "facts": []
+}
+```
 
-暂无。
-
-## 架构决策
-
-### Agent 项目记忆
-
-- 当前决策：启用仓库级共享项目记忆；协议与维护规则见 [`AGENTS.md`](../../AGENTS.md#项目记忆协议)。
-- 依据：{{CONFIRMED_SOURCE_AND_DATE}}。
-
-## 已知偏差与问题根因
-
-暂无。
-
-## 环境与验证经验
-
-暂无。
+<!-- project-memory-data:end -->

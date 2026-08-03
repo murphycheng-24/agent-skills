@@ -14,20 +14,20 @@ const PACKAGE_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const TARGETS = ['codex', 'claude', 'cursor']
 const SKILLS = {
   'bootstrap-project-ai-governance': {
-    claudeInstruction: 'For requests to initialize, bootstrap, migrate, standardize, or audit project AI governance, first read `SKILL.md` and all files in `references/`. Use the templates as output skeletons, preserve existing project conventions, and do not invent missing project or design facts.',
-    cursorDescription: 'Bootstrap or migrate tool-agnostic project AI governance, coding style, design-system documentation, cross-Agent adapters, and shared project memory for existing, scaffolded, or empty repositories.',
-    cursorReferences: ['references/discovery.md', 'references/document-contracts.md', 'references/acceptance.md']
+    claudeInstruction: 'For requests to initialize, bootstrap, migrate, harden, standardize, or audit project AI governance, first read `SKILL.md` and all files in `references/`. Use the templates as output skeletons, preserve existing project conventions, establish Git commit governance, and use project-memory protocol v0.2 without inventing facts or compatibility.',
+    cursorDescription: 'Bootstrap or migrate tool-agnostic project AI governance, Git commit governance, design-system documentation, cross-Agent adapters, and executable project memory protocol v0.2.',
+    cursorReferences: ['references/discovery.md', 'references/document-contracts.md', 'references/git-governance.md', 'references/runtime-memory.md', 'references/acceptance.md'],
   },
   'challenge-plan': {
     claudeInstruction: 'For plan-review requests such as 反对者视角、反驳方案、质疑计划、计划审查、方案优劣、MVP裁剪、更简单替代方案、方案风险审查或真实推荐, first read `SKILL.md` and `references/karpathy-guidelines.md` in this directory. Apply the workflow only when those requests are relevant.',
     cursorDescription: 'Review a product, technical, or implementation plan from an adversarial perspective. Trigger phrases include 反对者视角, 反驳方案, 质疑计划, 计划审查, MVP裁剪, 更简单替代方案 and 真实推荐.',
-    cursorReferences: ['references/karpathy-guidelines.md']
+    cursorReferences: ['references/karpathy-guidelines.md'],
   },
   'code-review': {
     claudeInstruction: 'For Git commit-range review requests such as 代码审查, code review, git review, 审查提交, 分析提交, PR 审查 or MR 审查, first read `SKILL.md` and use `references/report_template.md` when producing the report.',
     cursorDescription: 'Review a Git commit range and report P0/P1/P2 risks. Trigger phrases include 代码审查, code review, git review, 审查提交, 分析提交, PR 审查 and MR 审查.',
-    cursorReferences: ['references/report_template.md']
-  }
+    cursorReferences: ['references/report_template.md'],
+  },
 }
 
 function usage() {
@@ -41,7 +41,10 @@ function skillConfig(skillName) {
 }
 
 function claudeMarkers(skillName) {
-  return { start: `<!-- agent-skills:${skillName}:start -->`, end: `<!-- agent-skills:${skillName}:end -->` }
+  return {
+    start: `<!-- agent-skills:${skillName}:start -->`,
+    end: `<!-- agent-skills:${skillName}:end -->`,
+  }
 }
 
 function parseOptions(args) {
@@ -98,7 +101,10 @@ function claudeAdapter(skillName) {
 
 async function copySkill(skillName, destination) {
   await mkdir(dirname(destination), { recursive: true })
-  await cp(sourceSkill(skillName), destination, { recursive: true, force: true })
+  await cp(sourceSkill(skillName), destination, {
+    recursive: true,
+    force: true,
+  })
 }
 
 async function preflightInstall(skillName, targets, options) {

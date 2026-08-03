@@ -1,10 +1,11 @@
 {
   "name": "@murphy-lab/agent-skills",
-  "version": "0.3.0",
+  "version": "0.5.0",
   "description": "Install reusable agent skills for Codex, Claude Code, and Cursor.",
   "type": "module",
   "bin": {
-    "agent-skills": "bin/agent-skills.mjs"
+    "agent-skills": "bin/agent-skills.mjs",
+    "project-memory": "bin/project-memory.mjs"
   },
   "files": [
     "bin",

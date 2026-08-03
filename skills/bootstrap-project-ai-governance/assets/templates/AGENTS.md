@@ -17,24 +17,27 @@
 - 保留已有未提交改动；遇到重叠修改时停止覆盖并说明冲突。
 - 不主动迁移、升级依赖、增加兼容或建立平行规范。
 - 当前代码与已确认期望不一致时，区分“期望行为”和“实际 bug”。
+- commit message 遵循 `docs/ai/coding-style.md`；生成前检查 staged diff，不自动 stage、commit、push 或改写历史。
 
 ## 项目记忆协议
 
-- 本节是项目记忆协议唯一 owner；`docs/ai/project-memory.md` 只保存当前事实和必要路由。
+- 本节是项目记忆协议唯一 owner；`docs/ai/project-memory.md` 是当前事实的唯一数据入口。
+- 项目使用 project-memory protocol v0.2；运行命令以 `docs/ai/project-context.md` 为准。
+- Agent 不得直接编辑 `project-memory-data` 数据块，所有 CRUD 必须经 `project-memory propose` 和 `project-memory apply`。
 - 每条事实只能有一个 owner，其他位置最多保留链接。
-- 正常完成任务、最终回复前，将结果分类为 `ADD`、`UPDATE`、`DELETE` 或 `NOOP`。
-- `ADD`、`UPDATE`、`DELETE` 必须在最终回复前实际写回；`NOOP` 必须说明理由。
-- 首次 `ADD` 必须删除对应分区的“暂无。”，两者不得共存。
-- 新信息替代旧信息时原位修改或删除，历史由 Git 保存。
+- 实施任务或用户明确确认决策正常完成时，将事实分类为 `ADD`、`UPDATE`、`DELETE` 或 `NOOP`；Review、解释和诊断默认 `NOOP`，除非用户同时确认新的持久事实。
+- `ADD`、`UPDATE`、`DELETE` 必须在最终回复前通过 CLI 实际应用；`NOOP` 必须提供原因并应用 NOOP proposal。
+- 新信息替代旧信息时使用 `UPDATE` 或 `DELETE`，不得追加冲突副本；历史由 Git 保存。
 - 强制终止或用户停止生成无需写回，也不计入持久事实写回率。
 - 只记录已确认需求、已验证 contract、架构决策和可复用根因。
 - 禁止记录聊天流水、临时状态、推测、密钥、账号和个人数据。
-- 写回前重新读取最新记忆；不得自动 stage、commit 或 push。
+- `apply` 发生 baseHash 冲突时重新读取并提议，禁止自动语义合并。
 - 整理、去重、迁移或拆分记忆时读取 `docs/ai/skills/maintain-project-memory/SKILL.md`。
 
 ## 验证
 
 - 文档：运行项目 formatter 和 `git diff --check`。
+- 项目记忆：运行 `project-memory lint`；接入或协议变化时再运行 `project-memory doctor`。
 - 源码：执行 `docs/ai/project-context.md` 中确认的 type、test、lint 或 build 门禁。
 - 无法执行时说明原因，不得声称通过。
 

@@ -6,7 +6,7 @@
 
 内置 skill：
 
-- `bootstrap-project-ai-governance`：分析现有、已初始化或空项目，建立项目约束、项目上下文、coding style、design system、跨 Agent 入口和共享项目记忆。
+- `bootstrap-project-ai-governance`：生产化方法论 v0.3，建立项目约束、已验证上下文、coding style、Git commit governance、design system、跨 Agent 入口和可执行共享项目记忆。
 - `challenge-plan`：以反对者视角审查产品、技术或实施计划。
 - `code-review`：审查 Git 提交区间，输出 P0/P1/P2 风险报告。
 
@@ -33,6 +33,17 @@ npx @murphy-lab/agent-skills doctor code-review --target all --project .
 ```
 
 不指定 skill 的 `doctor` 命令会继续检查 `challenge-plan`，以保持兼容。
+
+## 项目记忆 Runtime
+
+本包同时提供无 runtime dependency 的 `project-memory` CLI：
+
+```bash
+npx --yes --package @murphy-lab/agent-skills project-memory lint --project .
+npx --yes --package @murphy-lab/agent-skills project-memory doctor --project . --json
+```
+
+protocol v0.2 支持 `query`、`propose`、`apply`、`lint` 和 `doctor`。写入使用 SHA-256 乐观并发控制，运行事件保存在 Git metadata 下。生产项目应固定 npm 包版本。
 
 ## 开发
 

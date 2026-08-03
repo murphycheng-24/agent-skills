@@ -17,31 +17,38 @@
 6. design system 的现状结论有 token、样式、组件、页面、截图或设计稿证据。
 7. 已实现、已确认期望、实际 bug 和未知项没有混写。
 8. `AGENTS.md` 是协议 owner，Claude/Cursor/其他入口没有复制完整规则。
-9. project memory 支持 CRUD、首次 ADD、异常终止边界和单一 owner。
-10. 不自动 stage、commit、push，不覆盖无关未提交改动。
-11. 针对修改文件运行 formatter 和 `git diff --check`。
-12. 修改代码、测试或构建配置时执行项目规定的最小门禁。
+9. `coding-style.md` 是 commit message 唯一 owner，规则有仓库证据或最小基线，不与其他文件重复。
+10. commit contract 明确格式、type、scope、subject、body、例外和 G1/G2/G3；执行等级不高于 hook/CI 实际验证结果。
+11. Existing Project 的既有 Git 规则未被静默覆盖；文档、hook 或 CI 冲突时结果为 `BLOCKED`。
+12. 不自动增加 Git 校验依赖，不自动 stage、commit、push 或改写历史，不覆盖无关未提交改动。
+13. 针对修改文件运行 formatter 和 `git diff --check`。
+14. 修改代码、测试或构建配置时执行项目规定的最小门禁。
+15. `project-memory lint` 通过；初始化、迁移、Adapter 或协议变化时 `project-memory doctor` 通过。
+16. baseHash 冲突、重复 ID、重复 statement、越界路径和高置信 secret 都能失败。
+17. 每个 Agent 标明 L1/L2/L3，支持声明不高于实际 E2E 结果。
 
 ## Smoke Test
 
-对生成结果做一次不污染项目事实的模拟：
+使用临时仓库或可回滚 fixture 执行 CLI E2E：
 
-1. 选择一个虚拟的已确认事实。
-2. 判断它应进入的 owner 和 CRUD 动作。
-3. 验证首次 `ADD` 会替换“暂无。”。
-4. 模拟新事实替代旧事实，验证执行 `UPDATE` 而不是追加冲突副本。
-5. 删除模拟内容，确认生成文件恢复。
+1. `ADD` 一个带 evidence 的虚拟事实并能被 `query` 读取。
+2. 创建两个相同 baseHash 的 `UPDATE` proposal；应用一个后另一个必须冲突失败。
+3. secret 和重复事实必须被拒绝。
+4. `DELETE` 后查询结果为空；`NOOP` 不改变文件 hash。
+5. `lint` 和 `doctor` 通过，事件中存在 proposal、apply 和 conflict。
+6. 删除 fixture，禁止把模拟事实留在项目记忆。
 
 ## 最终输出
 
-| 输出       | 内容                              |
-| ---------- | --------------------------------- |
-| 完成率     | 每个治理组成部分的完成比例        |
-| 迁移矩阵   | 文件、动作、owner、证据、结果     |
-| 设计系统   | 实现、决策、偏差、未知            |
-| 记忆系统   | CRUD、入口、维护、Smoke Test      |
-| Agent 接入 | Codex、Claude、Cursor、其他工具   |
-| 验证       | formatter、链接、测试、构建、diff |
-| 未决项     | `BLOCKED` 项和最小确认方式        |
+| 输出       | 内容                                       |
+| ---------- | ------------------------------------------ |
+| 完成率     | 每个治理组成部分的完成比例                 |
+| 迁移矩阵   | 文件、动作、owner、证据、结果              |
+| 设计系统   | 实现、决策、偏差、未知                     |
+| 记忆系统   | protocol、CRUD、冲突、安全、事件、E2E      |
+| Git 治理   | contract、owner、证据、G1/G2/G3、冲突      |
+| Agent 接入 | Codex、Claude、Cursor、其他工具及 L1/L2/L3 |
+| 验证       | formatter、链接、测试、构建、diff          |
+| 未决项     | `BLOCKED` 项和最小确认方式                 |
 
 任何未执行的验证必须说明原因，不得声称通过。

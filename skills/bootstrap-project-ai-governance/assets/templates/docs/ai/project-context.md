@@ -24,12 +24,13 @@
 
 ## 命令
 
-| 目的    | 命令                | 证据         |
-| ------- | ------------------- | ------------ |
-| Install | {{INSTALL_COMMAND}} | {{EVIDENCE}} |
-| Format  | {{FORMAT_COMMAND}}  | {{EVIDENCE}} |
-| Test    | {{TEST_COMMAND}}    | {{EVIDENCE}} |
-| Build   | {{BUILD_COMMAND}}   | {{EVIDENCE}} |
+| 目的    | 命令                       | 证据                         |
+| ------- | -------------------------- | ---------------------------- |
+| Install | {{INSTALL_COMMAND}}        | {{EVIDENCE}}                 |
+| Format  | {{FORMAT_COMMAND}}         | {{EVIDENCE}}                 |
+| Test    | {{TEST_COMMAND}}           | {{EVIDENCE}}                 |
+| Build   | {{BUILD_COMMAND}}          | {{EVIDENCE}}                 |
+| Memory  | {{PROJECT_MEMORY_COMMAND}} | project-memory protocol v0.2 |
 
 ## 变更边界
 
