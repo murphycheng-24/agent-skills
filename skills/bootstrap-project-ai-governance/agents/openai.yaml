@@ -1,0 +1,4 @@
+interface:
+  display_name: "Bootstrap Project AI Governance"
+  short_description: "Bootstrap portable AI governance for software repositories"
+  default_prompt: "Use $bootstrap-project-ai-governance to analyze this repository and install a verified AI governance, design system, and project memory baseline."

@@ -6,12 +6,14 @@
 
 Bundled skills:
 
+- `bootstrap-project-ai-governance`: analyze an existing, scaffolded, or empty repository and establish project instructions, verified context, coding style, design-system documentation, cross-Agent adapters, and shared project memory.
 - `challenge-plan`：以反对者视角审查产品、技术或实施计划。
 - `code-review`：审查 Git 提交区间，输出 P0/P1/P2 风险报告。
 
 ## Install
 
 ```bash
+npx @murphy-lab/agent-skills install bootstrap-project-ai-governance --target all --project .
 npx @murphy-lab/agent-skills install challenge-plan --target all --project .
 npx @murphy-lab/agent-skills install code-review --target all --project .
 ```

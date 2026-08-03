@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * 功能说明：为 Codex、Claude Code、Cursor 安装或检查指定 Agent skill。
- * 日期：2026-07-16
+ * 日期：2026-08-03
  * 主要接口：install、doctor
  */
 import { appendFile, cp, mkdir, readFile, writeFile } from 'node:fs/promises'
@@ -13,6 +13,11 @@ import { fileURLToPath } from 'node:url'
 const PACKAGE_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const TARGETS = ['codex', 'claude', 'cursor']
 const SKILLS = {
+  'bootstrap-project-ai-governance': {
+    claudeInstruction: 'For requests to initialize, bootstrap, migrate, standardize, or audit project AI governance, first read `SKILL.md` and all files in `references/`. Use the templates as output skeletons, preserve existing project conventions, and do not invent missing project or design facts.',
+    cursorDescription: 'Bootstrap or migrate tool-agnostic project AI governance, coding style, design-system documentation, cross-Agent adapters, and shared project memory for existing, scaffolded, or empty repositories.',
+    cursorReferences: ['references/discovery.md', 'references/document-contracts.md', 'references/acceptance.md']
+  },
   'challenge-plan': {
     claudeInstruction: 'For plan-review requests such as 反对者视角、反驳方案、质疑计划、计划审查、方案优劣、MVP裁剪、更简单替代方案、方案风险审查或真实推荐, first read `SKILL.md` and `references/karpathy-guidelines.md` in this directory. Apply the workflow only when those requests are relevant.',
     cursorDescription: 'Review a product, technical, or implementation plan from an adversarial perspective. Trigger phrases include 反对者视角, 反驳方案, 质疑计划, 计划审查, MVP裁剪, 更简单替代方案 and 真实推荐.',

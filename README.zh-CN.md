@@ -6,12 +6,14 @@
 
 内置 skill：
 
+- `bootstrap-project-ai-governance`：分析现有、已初始化或空项目，建立项目约束、项目上下文、coding style、design system、跨 Agent 入口和共享项目记忆。
 - `challenge-plan`：以反对者视角审查产品、技术或实施计划。
 - `code-review`：审查 Git 提交区间，输出 P0/P1/P2 风险报告。
 
 ## 安装
 
 ```bash
+npx @murphy-lab/agent-skills install bootstrap-project-ai-governance --target all --project .
 npx @murphy-lab/agent-skills install challenge-plan --target all --project .
 npx @murphy-lab/agent-skills install code-review --target all --project .
 ```
