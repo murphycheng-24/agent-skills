@@ -1,0 +1,4 @@
+interface:
+  display_name: "Maintain Project Memory"
+  short_description: "Clean, deduplicate, promote, and split project memory safely"
+  default_prompt: "Use $maintain-project-memory to audit and maintain this repository's shared project memory."

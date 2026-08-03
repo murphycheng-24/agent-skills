@@ -1,0 +1,4 @@
+interface:
+  display_name: "Bootstrap Project AI Governance"
+  short_description: "Bootstrap Git-aware AI governance and project memory"
+  default_prompt: "Use $bootstrap-project-ai-governance to establish Git-aware project AI governance and the executable project-memory protocol v0.2 in this repository."

@@ -1,0 +1,10 @@
+---
+description: {{PROJECT_NAME}} 项目统一约束入口。处理项目任务前必须读取并遵循。
+alwaysApply: true
+---
+
+# 项目规则统一入口
+
+处理任何项目任务前，先完整读取 `AGENTS.md`，再按其中的任务类型读取项目记忆、工程规范、design system、Skill 和其他真源文件。
+
+不得在本入口复制 `AGENTS.md`、项目记忆或其他规范内容。
