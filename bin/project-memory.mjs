@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * 功能说明：为仓库级共享项目记忆提供查询、提议、原子写入、校验和诊断能力。
- * 日期：2026-08-03
+ * 日期：2026-08-12
  * 主要接口：query、propose、apply、lint、doctor。
  */
 import { createHash, randomUUID } from 'node:crypto'
@@ -18,7 +18,20 @@ const KINDS = new Set(['requirement', 'api-contract', 'architecture', 'root-caus
 const EVIDENCE_TYPES = new Set(['user-confirmed', 'contract', 'test', 'code', 'runtime'])
 
 function usage() {
-  return ['Usage:', '  project-memory query [--project PATH] [--memory PATH] [--id ID] [--kind KIND] [--text TEXT] [--json]', '  project-memory propose --action ADD|UPDATE|DELETE|NOOP [fact options] [--project PATH] [--memory PATH]', '  project-memory apply (--proposal PATH | --stdin) [--project PATH] [--json]', '  project-memory lint [--project PATH] [--memory PATH] [--json]', '  project-memory doctor [--project PATH] [--memory PATH] [--json]', '', 'Fact options:', '  --id ID --kind KIND --statement TEXT --evidence-type TYPE --evidence-ref REF', '  --reason TEXT --task-id ID --agent NAME'].join('\n')
+  return [
+    'Usage:',
+    '  project-memory query [--project PATH] [--memory PATH | --all] [--id ID] [--kind KIND] [--text TEXT] [--json]',
+    '  project-memory propose --action ADD|UPDATE|DELETE|NOOP [fact options] [--project PATH] [--memory PATH]',
+    '  project-memory apply (--proposal PATH | --stdin) [--project PATH] [--json]',
+    '  project-memory lint [--project PATH] [--memory PATH | --all] [--json]',
+    '  project-memory doctor [--project PATH] [--memory PATH | --all] [--json]',
+    '',
+    'Fact options:',
+    '  --id ID --kind KIND --statement TEXT --evidence-type TYPE --evidence-ref REF',
+    '  --reason TEXT --task-id ID --agent NAME',
+    '',
+    '--all scans the root memory file plus docs/ai/project-memory/*.md and doc/ai/project-memory/*.md.',
+  ].join('\n')
 }
 
 function parseOptions(args, valueNames, booleanNames = []) {
@@ -69,6 +82,49 @@ function findMemoryPath(project, requested) {
   return matches[0]
 }
 
+function hasMemoryDataMarkers(content) {
+  return content.includes(START_MARKER) && content.includes(END_MARKER)
+}
+
+async function listDomainMemoryFiles(project) {
+  const directories = ['docs/ai/project-memory', 'doc/ai/project-memory']
+  const files = []
+  for (const directory of directories) {
+    const absolute = resolve(project, directory)
+    if (!existsSync(absolute)) continue
+    for (const entry of await readdir(absolute, { withFileTypes: true })) {
+      if (!entry.isFile() || !entry.name.endsWith('.md')) continue
+      const path = join(absolute, entry.name)
+      const content = await readFile(path, 'utf8')
+      if (hasMemoryDataMarkers(content)) files.push(path)
+    }
+  }
+  return files
+}
+
+async function listMemoryFiles(project, options) {
+  if (options.memory && options.all) throw new Error('Use either --memory or --all, not both.')
+  if (options.all) {
+    const root = findMemoryPath(project)
+    const domains = await listDomainMemoryFiles(project)
+    const paths = [root, ...domains.filter((path) => path !== root)]
+    return [...new Set(paths)]
+  }
+  return [findMemoryPath(project, options.memory)]
+}
+
+async function loadMemoryAt(project, path) {
+  const content = await readFile(path, 'utf8')
+  const parsed = parseMemory(content)
+  return { project, path, memory: slashPath(relative(project, path)), content, ...parsed, currentHash: hash(content) }
+}
+
+function agentsReferencesMemory(agentsContent, memoryRelative) {
+  if (agentsContent.includes(memoryRelative)) return true
+  if (agentsContent.includes('project-memory/') || agentsContent.includes('project-memory\\')) return true
+  return DEFAULT_MEMORY_PATHS.some((path) => agentsContent.includes(path))
+}
+
 function hash(content) {
   return createHash('sha256').update(content).digest('hex')
 }
@@ -93,9 +149,7 @@ function parseMemory(content) {
 async function loadMemory(options, proposalMemory) {
   const project = projectPath(options)
   const path = proposalMemory ? resolveInside(project, proposalMemory) : findMemoryPath(project, options.memory)
-  const content = await readFile(path, 'utf8')
-  const parsed = parseMemory(content)
-  return { project, path, memory: slashPath(relative(project, path)), content, ...parsed, currentHash: hash(content) }
+  return loadMemoryAt(project, path)
 }
 
 function normalizedStatement(statement) {
@@ -257,14 +311,26 @@ function observedMetrics(events) {
 }
 
 async function query(args) {
-  const options = parseOptions(args, ['project', 'memory', 'id', 'kind', 'text'], ['json'])
-  const loaded = await loadMemory(options)
-  const errors = validateData(loaded.data, loaded.memory, loaded.content)
-  if (errors.length) throw new Error(errors.join('\n'))
+  const options = parseOptions(args, ['project', 'memory', 'id', 'kind', 'text'], ['json', 'all'])
+  const project = projectPath(options)
+  const paths = await listMemoryFiles(project, options)
   const text = options.text?.toLowerCase()
-  const facts = loaded.data.facts.filter((fact) => (!options.id || fact.id === options.id) && (!options.kind || fact.kind === options.kind) && (!text || fact.statement.toLowerCase().includes(text)))
-  if (options.json) console.log(JSON.stringify({ protocolVersion: PROTOCOL_VERSION, memory: loaded.memory, facts }, null, 2))
-  else console.log(facts.length ? facts.map((fact) => `- [${fact.id}] (${fact.kind}) ${fact.statement}`).join('\n') : 'No matching facts.')
+  const memories = []
+  const facts = []
+  for (const path of paths) {
+    const loaded = await loadMemoryAt(project, path)
+    const errors = validateData(loaded.data, loaded.memory, loaded.content)
+    if (errors.length) throw new Error(`${loaded.memory}: ${errors.join('\n')}`)
+    memories.push(loaded.memory)
+    for (const fact of loaded.data.facts) {
+      if (options.id && fact.id !== options.id) continue
+      if (options.kind && fact.kind !== options.kind) continue
+      if (text && !fact.statement.toLowerCase().includes(text)) continue
+      facts.push({ ...fact, memory: loaded.memory })
+    }
+  }
+  if (options.json) console.log(JSON.stringify({ protocolVersion: PROTOCOL_VERSION, memories, facts }, null, 2))
+  else console.log(facts.length ? facts.map((fact) => `- [${fact.id}] (${fact.kind}) @${fact.memory} ${fact.statement}`).join('\n') : 'No matching facts.')
 }
 
 async function propose(args) {
@@ -333,12 +399,28 @@ async function apply(args) {
 }
 
 async function lint(args) {
-  const options = parseOptions(args, ['project', 'memory'], ['json'])
-  const loaded = await loadMemory(options)
-  const errors = validateData(loaded.data, loaded.memory, loaded.content)
-  if (errors.length) throw new Error(errors.join('\n'))
-  const result = { outcome: 'OK', protocolVersion: PROTOCOL_VERSION, memory: loaded.memory, facts: loaded.data.facts.length, hash: loaded.currentHash }
-  console.log(options.json ? JSON.stringify(result, null, 2) : `project-memory lint: OK (${result.facts} facts)`)
+  const options = parseOptions(args, ['project', 'memory'], ['json', 'all'])
+  const project = projectPath(options)
+  const paths = await listMemoryFiles(project, options)
+  const files = []
+  let totalFacts = 0
+  for (const path of paths) {
+    const loaded = await loadMemoryAt(project, path)
+    const errors = validateData(loaded.data, loaded.memory, loaded.content)
+    if (errors.length) throw new Error(`${loaded.memory}: ${errors.join('\n')}`)
+    totalFacts += loaded.data.facts.length
+    files.push({ memory: loaded.memory, facts: loaded.data.facts.length, hash: loaded.currentHash })
+  }
+  const result = {
+    outcome: 'OK',
+    protocolVersion: PROTOCOL_VERSION,
+    memory: files[0]?.memory,
+    memories: files.map((file) => file.memory),
+    files,
+    facts: totalFacts,
+    hash: files[0]?.hash,
+  }
+  console.log(options.json ? JSON.stringify(result, null, 2) : `project-memory lint: OK (${result.facts} facts across ${files.length} file(s))`)
 }
 
 async function cursorAdapter(project) {
@@ -350,26 +432,50 @@ async function cursorAdapter(project) {
   return 'invalid'
 }
 
-async function doctor(args) {
-  const options = parseOptions(args, ['project', 'memory'], ['json'])
-  const loaded = await loadMemory(options)
+async function doctorOne(project, path, agentsContent, support, metrics) {
+  const loaded = await loadMemoryAt(project, path)
   const errors = validateData(loaded.data, loaded.memory, loaded.content)
-  const agentPath = join(loaded.project, 'AGENTS.md')
-  if (!existsSync(agentPath)) errors.push('AGENTS.md is missing.')
-  else if (!(await readFile(agentPath, 'utf8')).includes(loaded.memory)) errors.push(`AGENTS.md does not reference ${loaded.memory}.`)
-  const gitDir = await gitDirectory(loaded.project)
-  if (!gitDir) errors.push('Git metadata is required for concurrency history and local events.')
-  const claudePath = join(loaded.project, 'CLAUDE.md')
+  if (!agentsContent) errors.push('AGENTS.md is missing.')
+  else if (!agentsReferencesMemory(agentsContent, loaded.memory)) errors.push(`AGENTS.md does not reference ${loaded.memory} or the project-memory entry path.`)
+  return { loaded, errors, support, metrics }
+}
+
+async function doctor(args) {
+  const options = parseOptions(args, ['project', 'memory'], ['json', 'all'])
+  const project = projectPath(options)
+  const paths = await listMemoryFiles(project, options)
+  const agentPath = join(project, 'AGENTS.md')
+  const agentsContent = existsSync(agentPath) ? await readFile(agentPath, 'utf8') : ''
+  const gitDir = await gitDirectory(project)
+  const claudePath = join(project, 'CLAUDE.md')
   const support = {
     codex: existsSync(agentPath) ? 'L2' : 'invalid',
     claude: existsSync(claudePath) ? ((await readFile(claudePath, 'utf8')).includes('AGENTS.md') ? 'L2' : 'invalid') : 'not-configured',
-    cursor: await cursorAdapter(loaded.project),
+    cursor: await cursorAdapter(project),
     other: 'L1-manual'
   }
+  const metrics = observedMetrics(await readEvents(project))
+  const files = []
+  const errors = []
+  if (!gitDir) errors.push('Git metadata is required for concurrency history and local events.')
   if (support.claude === 'invalid') errors.push('CLAUDE.md does not reference AGENTS.md.')
   if (support.cursor === 'invalid') errors.push('Cursor rules do not reference AGENTS.md.')
+  for (const path of paths) {
+    const result = await doctorOne(project, path, agentsContent, support, metrics)
+    errors.push(...result.errors.map((error) => `${result.loaded.memory}: ${error}`))
+    files.push({ memory: result.loaded.memory, facts: result.loaded.data.facts.length })
+  }
   if (errors.length) throw new Error(errors.join('\n'))
-  const result = { outcome: 'OK', protocolVersion: PROTOCOL_VERSION, memory: loaded.memory, facts: loaded.data.facts.length, support, metrics: observedMetrics(await readEvents(loaded.project)) }
+  const result = {
+    outcome: 'OK',
+    protocolVersion: PROTOCOL_VERSION,
+    memory: files[0]?.memory,
+    memories: files.map((file) => file.memory),
+    files,
+    facts: files.reduce((sum, file) => sum + file.facts, 0),
+    support,
+    metrics,
+  }
   console.log(options.json ? JSON.stringify(result, null, 2) : `project-memory doctor: OK\n${JSON.stringify(result, null, 2)}`)
 }
 

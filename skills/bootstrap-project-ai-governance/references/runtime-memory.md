@@ -28,20 +28,33 @@ v0.2 不自动迁移旧记忆。发现无结构化数据块的 Existing Project 
 
 允许的证据类型：`user-confirmed`、`contract`、`test`、`code`、`runtime`。代码现状默认不进入记忆；只有它还承载无法从代码直接恢复的限制或根因时才记录。
 
+## 按域拆分与选择性读取
+
+- 根入口 `docs/ai/project-memory.md`（或 `doc/ai/project-memory.md`）负责路由和跨域事实。
+- 领域分册位于同级 `project-memory/<domain>.md`，每个文件有独立数据块；`owner` 必须等于该分册相对路径。
+- Agent 任务先读根入口路由，再只对相关分册执行 `query --memory ...` 或读取该分册 Markdown；禁止无必要默认全量读取。
+- CRUD 必须带 `--memory <owner 文件>`；校验多个文件使用 `--all`。
+- 用户明确要求按域拆分时，即使未达到体量阈值也可以拆分。
+
 ## 命令
 
 项目必须在 `project-context.md` 中记录实际可执行且固定版本的命令。以下使用已安装的 `project-memory` binary：
 
 ```bash
 project-memory query --project . --kind requirement
+project-memory query --project . --memory docs/ai/project-memory/domain-a.md --json
+project-memory query --project . --all --kind requirement --json
 project-memory lint --project .
+project-memory lint --project . --all --json
 project-memory doctor --project . --json
+project-memory doctor --project . --all --json
 ```
 
 写入分为提议和应用：
 
 ```bash
 project-memory propose --project . --action ADD --id req-example --kind requirement --statement "Confirmed fact" --evidence-type user-confirmed --evidence-ref "task:123"
+project-memory propose --project . --memory docs/ai/project-memory/domain-a.md --action ADD --id req-domain --kind requirement --statement "Domain fact" --evidence-type user-confirmed --evidence-ref "task:124"
 project-memory apply --project . --proposal proposal.json
 ```
 
@@ -67,4 +80,4 @@ project-memory apply --project . --proposal proposal.json
 
 ## 运行指标
 
-至少记录：已确认持久事实写回率、误写率、过期事实率、重复 owner 率、冲突率、检索命中率、读取 token p50/p95 和 Adapter 合规率。没有独立分母时必须将写回率标记为 `observed`，不得宣传为完整写回率。
+至少记录：已确认持久事实写回率、误写率、过期事实率、重复 owner 率、冲突率、检索命中率、读取 token p50/p95 和 Adapter 合规率。没有独立分母时必须将写回率标记为 `observed`，不得宣传为完整写回率。读取 token 指标应优先按「入口 + 相关分册」路径抽样，不得只用全量记忆体积代替按需读取成本。

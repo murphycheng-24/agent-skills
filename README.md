@@ -43,7 +43,7 @@ npx --yes --package @murphy-lab/agent-skills project-memory lint --project .
 npx --yes --package @murphy-lab/agent-skills project-memory doctor --project . --json
 ```
 
-It implements protocol v0.2 with `query`, `propose`, `apply`, `lint`, and `doctor`. Writes use SHA-256 optimistic concurrency and local events under Git metadata. Pin the package version in production projects.
+It implements protocol v0.2 with `query`, `propose`, `apply`, `lint`, and `doctor`. Writes use SHA-256 optimistic concurrency and local events under Git metadata. Pin the package version in production projects. When memory grows, compact first, then split by real business domains, and enable index-plus-domain selective reads (with an L0 light path) in `AGENTS.md`—splitting alone without changing the read protocol yields limited token savings. Use `lint --all` / `doctor --all` when multiple memory files exist.
 
 ## Development
 

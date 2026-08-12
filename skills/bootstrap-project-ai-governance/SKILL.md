@@ -30,6 +30,7 @@ description: Analyze an existing, scaffolded, or empty software repository and e
 - commit message 由 coding-style 持有；规则有仓库证据或明确基线，执行等级不高于 hook/CI 实际能力。
 - 项目记忆支持 `ADD`、`UPDATE`、`DELETE`、`NOOP`，历史由 Git 保存。
 - project-memory protocol v0.2 通过统一 CLI 执行 CRUD、结构校验、baseHash 冲突拒绝和本地事件记录。
+- `AGENTS.md` 定义 L0 轻路径，以及项目记忆「入口 + 相关分册」的按域读取与写回；禁止默认全量读取。
 - Agent 支持按 L1/L2/L3 标注；没有 lifecycle hook 的工具不得宣称生产级硬保障。
 - 保留用户现有改动，不自动 stage、commit 或 push。
 - 生成文件通过项目 formatter、路径检查和适用的测试或构建门禁。
@@ -117,7 +118,8 @@ CLAUDE.md
 - 写入使用 baseHash 乐观锁并原子替换，冲突时拒绝覆盖；
 - `lint` 检查 contract、重复事实、placeholder 和高置信 secret；`doctor` 检查入口、Git 和 Adapter；
 - 进程强制终止或用户停止生成不要求写回；
-- 只有事实数、token、领域数量或检索指标证明选择性读取受影响时才按业务边界拆分。
+- 只有事实数、token、领域数量或检索指标证明选择性读取受影响时，或用户明确要求按域拆分时，才按业务边界拆分；
+- 拆分后根入口保留路由，领域事实写入分册并通过 `--memory` 维护；可用 `lint --all` / `doctor --all` 校验。
 
 Existing Project 没有 v0.2 数据块时只输出迁移矩阵；未经确认不得转换或双写旧格式。
 

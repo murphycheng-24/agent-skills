@@ -41,9 +41,12 @@ npx @murphy-lab/agent-skills doctor code-review --target all --project .
 ```bash
 npx --yes --package @murphy-lab/agent-skills project-memory lint --project .
 npx --yes --package @murphy-lab/agent-skills project-memory doctor --project . --json
+npx --yes --package @murphy-lab/agent-skills project-memory lint --project . --all
 ```
 
 protocol v0.2 支持 `query`、`propose`、`apply`、`lint` 和 `doctor`。写入使用 SHA-256 乐观并发控制，运行事件保存在 Git metadata 下。生产项目应固定 npm 包版本。
+
+记忆膨胀时的推荐路径：先整理压缩与去重 → 按真实业务域拆分分册 → 在 `AGENTS.md` 启用「入口 + 相关分册」按域读取/写回（并保留 L0 轻路径）。只拆分但不改读取协议，token 收益有限。
 
 ## 开发
 

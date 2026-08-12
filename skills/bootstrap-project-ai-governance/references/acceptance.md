@@ -23,9 +23,12 @@
 12. 不自动增加 Git 校验依赖，不自动 stage、commit、push 或改写历史，不覆盖无关未提交改动。
 13. 针对修改文件运行 formatter 和 `git diff --check`。
 14. 修改代码、测试或构建配置时执行项目规定的最小门禁。
-15. `project-memory lint` 通过；初始化、迁移、Adapter 或协议变化时 `project-memory doctor` 通过。
+15. `project-memory lint` 通过；存在多个记忆文件时 `lint --all` 通过；初始化、迁移、Adapter 或协议变化时 `project-memory doctor`（或多个文件时 `--all`）通过。
 16. baseHash 冲突、重复 ID、重复 statement、越界路径和高置信 secret 都能失败。
 17. 每个 Agent 标明 L1/L2/L3，支持声明不高于实际 E2E 结果。
+18. `AGENTS.md` 定义 L0 轻路径，以及「入口 + 相关分册」的按域读取/写回协议；未命中 L0 时不得默认要求读全部分册。
+19. 若已按域拆分：根入口是路由索引且不含大段单一领域细则；每个分册有独立数据块；路由表链接有效；跨分册无重复完整结论。
+20. 维护 Skill 要求输出事实数、估算 token 和按域体积；用户明确要求拆分时允许未超阈值拆分。
 
 ## Smoke Test
 
@@ -45,7 +48,7 @@
 | 完成率     | 每个治理组成部分的完成比例                 |
 | 迁移矩阵   | 文件、动作、owner、证据、结果              |
 | 设计系统   | 实现、决策、偏差、未知                     |
-| 记忆系统   | protocol、CRUD、冲突、安全、事件、E2E      |
+| 记忆系统   | protocol、CRUD、冲突、安全、事件、E2E、按域读取/拆分、L0 |
 | Git 治理   | contract、owner、证据、G1/G2/G3、冲突      |
 | Agent 接入 | Codex、Claude、Cursor、其他工具及 L1/L2/L3 |
 | 验证       | formatter、链接、测试、构建、diff          |
