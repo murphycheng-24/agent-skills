@@ -1,0 +1,2 @@
+# 保持上游快照的原始 LF 字节，确保 manifest blob 校验与发布产物一致。
+skills/engineering-discipline/SKILL.md text eol=lf
