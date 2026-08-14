@@ -1,6 +1,6 @@
 /**
  * 功能说明：验证 Agent Skills CLI 的跨工具安装入口。
- * 日期：2026-08-03
+ * 日期：2026-08-14
  * 主要接口：agent-skills install、agent-skills doctor
  */
 import assert from 'node:assert/strict'
@@ -42,6 +42,13 @@ test('installs and verifies every bundled skill for all supported targets', asyn
     assert.equal(existsSync(join(root, 'bootstrap-project-ai-governance', '.agent-skills', 'bootstrap-project-ai-governance', 'references', 'runtime-memory.md')), true)
     assert.match(await readFile(join(root, 'bootstrap-project-ai-governance', '.agent-skills', 'bootstrap-project-ai-governance', 'references', 'git-governance.md'), 'utf8'), /<type>\(<scope>\): <subject>/)
     assert.match(await readFile(join(root, 'code-review', '.cursor', 'rules', 'code-review.mdc'), 'utf8'), /代码审查/)
+    const codeReviewRoot = join(root, 'code-review', '.agent-skills', 'code-review')
+    const codeReviewSkill = await readFile(join(codeReviewRoot, 'SKILL.md'), 'utf8')
+    const reportTemplate = await readFile(join(codeReviewRoot, 'references', 'report_template.md'), 'utf8')
+    for (const section of ['隐藏范围', '行为迁移矩阵', '测试建议范围']) {
+      assert.match(codeReviewSkill, new RegExp(section))
+      assert.match(reportTemplate, new RegExp(`## .*${section}`))
+    }
     assert.match(await readFile(join(root, 'bootstrap-project-ai-governance', '.cursor', 'rules', 'bootstrap-project-ai-governance.mdc'), 'utf8'), /project AI governance/)
     assert.match(await readFile(join(root, 'bootstrap-project-ai-governance', '.cursor', 'rules', 'bootstrap-project-ai-governance.mdc'), 'utf8'), /git-governance\.md/)
     assert.throws(() => run(['install', 'code-review', '--target', 'cursor', '--project', join(root, 'code-review')], env), /already exists/)
