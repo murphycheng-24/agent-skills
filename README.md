@@ -9,6 +9,11 @@ Bundled skills:
 - `bootstrap-project-ai-governance`: production-oriented methodology v0.3 for project instructions, verified context, coding style, Git commit governance, design-system documentation, cross-Agent adapters, and executable shared project memory.
 - `challenge-plan`：以反对者视角审查产品、技术或实施计划。
 - `code-review`：审查 Git 提交区间，输出 P0/P1/P2 风险报告。
+- `engineering-discipline`: a pinned upstream snapshot of the tool-agnostic guidelines from [coding-guidelines](https://github.com/murphycheng-24/coding-guidelines).
+
+## Upstream Snapshots
+
+`coding-guidelines` remains the source of truth for `engineering-discipline`. Update `vendor/engineering-discipline.json` to a reviewed upstream commit and blob SHA, then run `npm run sync:engineering-discipline`. Do not edit `skills/engineering-discipline` by hand.
 
 ## Install
 
@@ -16,6 +21,7 @@ Bundled skills:
 npx @murphy-lab/agent-skills install bootstrap-project-ai-governance --target all --project .
 npx @murphy-lab/agent-skills install challenge-plan --target all --project .
 npx @murphy-lab/agent-skills install code-review --target all --project .
+npx @murphy-lab/agent-skills install engineering-discipline --target all --project .
 ```
 
 `codex` installs into `$CODEX_HOME/skills` (or `~/.codex/skills`). `claude` writes a managed import to the project's `CLAUDE.md`. `cursor` creates an Agent Requested rule in `.cursor/rules`.

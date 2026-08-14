@@ -1,0 +1,16 @@
+{
+  "skill": "engineering-discipline",
+  "targetPath": "skills/engineering-discipline",
+  "source": {
+    "repository": "murphycheng-24/coding-guidelines",
+    "commit": "f94a5746733bda4733f18ff9184b934a41b5664e",
+    "path": "skills/engineering-discipline",
+    "license": "MIT",
+    "files": [
+      {
+        "path": "SKILL.md",
+        "sha": "d0e53b45bdd05fe28393a3c51005910e8ea3e7c6"
+      }
+    ]
+  }
+}

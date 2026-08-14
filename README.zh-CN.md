@@ -9,6 +9,11 @@
 - `bootstrap-project-ai-governance`：生产化方法论 v0.3，建立项目约束、已验证上下文、coding style、Git commit governance、design system、跨 Agent 入口和可执行共享项目记忆。
 - `challenge-plan`：以反对者视角审查产品、技术或实施计划。
 - `code-review`：审查 Git 提交区间，输出 P0/P1/P2 风险报告。
+- `engineering-discipline`：来自 [coding-guidelines](https://github.com/murphycheng-24/coding-guidelines) 的固定上游快照，提供工具无关的工程纪律规则。
+
+## 上游快照
+
+`coding-guidelines` 是 `engineering-discipline` 的唯一源码。更新时先将 `vendor/engineering-discipline.json` 改为已审核的上游 commit 与 blob SHA，再运行 `npm run sync:engineering-discipline`；禁止手工编辑 `skills/engineering-discipline`。
 
 ## 安装
 
@@ -16,6 +21,7 @@
 npx @murphy-lab/agent-skills install bootstrap-project-ai-governance --target all --project .
 npx @murphy-lab/agent-skills install challenge-plan --target all --project .
 npx @murphy-lab/agent-skills install code-review --target all --project .
+npx @murphy-lab/agent-skills install engineering-discipline --target all --project .
 ```
 
 `codex` 会安装到 `$CODEX_HOME/skills`（或 `~/.codex/skills`）。`claude` 会向项目的 `CLAUDE.md` 写入受管理的 import。`cursor` 会在 `.cursor/rules` 中创建 Agent Requested rule。

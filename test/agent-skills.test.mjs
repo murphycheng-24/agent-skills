@@ -1,10 +1,11 @@
 /**
  * 功能说明：验证 Agent Skills CLI 的跨工具安装入口。
  * 日期：2026-08-14
- * 主要接口：agent-skills install、agent-skills doctor
+ * 主要接口：agent-skills install、agent-skills doctor、上游快照溯源校验
  */
 import assert from 'node:assert/strict'
 import { execFileSync } from 'node:child_process'
+import { createHash } from 'node:crypto'
 import { mkdtemp, readFile, rm } from 'node:fs/promises'
 import { existsSync } from 'node:fs'
 import { tmpdir } from 'node:os'
@@ -25,7 +26,7 @@ test('installs and verifies every bundled skill for all supported targets', asyn
   const root = await mkdtemp(join(tmpdir(), 'agent-skills-'))
   const env = { ...process.env, CODEX_HOME: join(root, 'codex-home') }
   try {
-    for (const skillName of ['bootstrap-project-ai-governance', 'challenge-plan', 'code-review']) {
+    for (const skillName of ['bootstrap-project-ai-governance', 'challenge-plan', 'code-review', 'engineering-discipline']) {
       const project = join(root, skillName)
       run(['install', skillName, '--target', 'all', '--project', project], env)
       assert.equal(existsSync(join(env.CODEX_HOME, 'skills', skillName, 'SKILL.md')), true)
@@ -55,4 +56,15 @@ test('installs and verifies every bundled skill for all supported targets', asyn
   } finally {
     await rm(root, { recursive: true, force: true })
   }
+})
+
+test('keeps engineering-discipline aligned with its pinned upstream blob', async () => {
+  const manifest = JSON.parse(await readFile('vendor/engineering-discipline.json', 'utf8'))
+  const content = await readFile('skills/engineering-discipline/SKILL.md')
+  const blobSha = createHash('sha1').update(`blob ${content.length}\0`).update(content).digest('hex')
+
+  assert.equal(manifest.skill, 'engineering-discipline')
+  assert.equal(manifest.targetPath, 'skills/engineering-discipline')
+  assert.equal(manifest.source.files[0].path, 'SKILL.md')
+  assert.equal(blobSha, manifest.source.files[0].sha)
 })

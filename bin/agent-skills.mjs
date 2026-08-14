@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * 功能说明：为 Codex、Claude Code、Cursor 安装或检查指定 Agent skill。
- * 日期：2026-08-03
+ * 日期：2026-08-14
  * 主要接口：install、doctor
  */
 import { appendFile, cp, mkdir, readFile, writeFile } from 'node:fs/promises'
@@ -27,6 +27,11 @@ const SKILLS = {
     claudeInstruction: 'For Git commit-range review requests such as 代码审查, code review, git review, 审查提交, 分析提交, PR 审查 or MR 审查, first read `SKILL.md` and use `references/report_template.md` when producing the report.',
     cursorDescription: 'Review a Git commit range and report P0/P1/P2 risks. Trigger phrases include 代码审查, code review, git review, 审查提交, 分析提交, PR 审查 and MR 审查.',
     cursorReferences: ['references/report_template.md'],
+  },
+  'engineering-discipline': {
+    claudeInstruction: 'For non-trivial coding, debugging, review, dependency, verification, or delivery work, first read `SKILL.md` and apply its engineering-discipline workflow. Keep simple tasks proportionate to their risk.',
+    cursorDescription: 'Apply tool-agnostic engineering discipline to non-trivial coding, debugging, verification, dependency, and delivery work.',
+    cursorReferences: [],
   },
 }
 

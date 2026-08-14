@@ -9,12 +9,15 @@
   },
   "files": [
     "bin",
+    "scripts",
+    "vendor",
     "skills",
     "README.md",
     "LICENSE"
   ],
   "scripts": {
-    "test": "node --test"
+    "test": "node --test",
+    "sync:engineering-discipline": "node scripts/sync-vendored-skill.mjs vendor/engineering-discipline.json"
   },
   "engines": {
     "node": ">=18"
