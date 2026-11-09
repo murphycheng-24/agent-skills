@@ -6,7 +6,7 @@
 
 内置 skill：
 
-- `bootstrap-project-ai-governance`：生产化方法论 v0.3，建立项目约束、已验证上下文、coding style、Git commit governance、design system、跨 Agent 入口和可执行共享项目记忆。
+- `bootstrap-project-ai-governance`：生产化方法论 v0.3.1，建立项目约束、已验证上下文、coding style、Git commit governance、design system、结合 `design-taste-frontend` 与 `impeccable` 的 UI 美感流程、跨 Agent 入口和可执行共享项目记忆。这两个 UI skill 从目标环境发现，不随本包分发或自动安装。
 - `challenge-plan`：以反对者视角审查产品、技术或实施计划。
 - `code-review`：审查 Git 提交区间，输出 P0/P1/P2 风险报告。
 - `engineering-discipline`：来自 [coding-guidelines](https://github.com/murphycheng-24/coding-guidelines) 的固定上游快照，提供工具无关的工程纪律规则。

@@ -6,7 +6,7 @@
 
 Bundled skills:
 
-- `bootstrap-project-ai-governance`: production-oriented methodology v0.3 for project instructions, verified context, coding style, Git commit governance, design-system documentation, cross-Agent adapters, and executable shared project memory.
+- `bootstrap-project-ai-governance`: production-oriented methodology v0.3.1 for project instructions, verified context, coding style, Git commit governance, design-system documentation, UI quality workflows with `design-taste-frontend` and `impeccable`, cross-Agent adapters, and executable shared project memory. These two UI skills are discovered in the target environment and are not bundled or installed automatically.
 - `challenge-plan`：以反对者视角审查产品、技术或实施计划。
 - `code-review`：审查 Git 提交区间，输出 P0/P1/P2 风险报告。
 - `engineering-discipline`: a pinned upstream snapshot of the tool-agnostic guidelines from [coding-guidelines](https://github.com/murphycheng-24/coding-guidelines).

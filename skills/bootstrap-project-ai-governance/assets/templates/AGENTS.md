@@ -33,6 +33,16 @@
 - 当前代码与已确认期望不一致时，区分“期望行为”和“实际 bug”。
 - commit message 遵循 `docs/ai/coding-style.md`；生成前检查 staged diff，不自动 stage、commit、push 或改写历史。
 
+## UI 设计与视觉验收
+
+- 仅 UI 设计、样式、组件或视觉审查任务进入本节；L0 与非 UI 任务跳过。初始化治理只建立规则，不顺带修改页面。
+- 先读取实际 design-system owner 与目标页面，确认用途：Persuade（转化）、Operate（操作）、Read（阅读）或 Experience（体验）。页面范围、视觉目标和证据记录在 design-system owner。
+- 从当前项目或 Agent 的 skill 目录发现 `design-taste-frontend`、`impeccable`，读取实际 `SKILL.md` 并按任务加载其引用。以 design-system 中的可用性记录为入口，执行前复核；缺失时继续可完成的设计评审，明确未执行的工具检查，不自动安装或启用 hook。
+- 营销、公司、产品网站需要建立视觉方向时使用 `design-taste-frontend`，再按需使用 `impeccable` 的 critique、audit、polish；后台、Dashboard、表单及阅读界面以 `impeccable` 为主。局部修正按范围选用，不强制重跑完整设计流程。
+- 用户已确认的需求、品牌与项目 Design System 优先于外部 skill 默认风格。复用现有 token 和组件；不把营销站的整屏 section、颜色禁令或强制动效套到后台；冲突未解决时先记录，不改写现有设计决策。
+- 按 PDCA 执行：Plan 明确视觉目标与保留项；Do 实施最小 UI 变更；Check 对照真实渲染及适用的 responsive、状态、keyboard、focus、contrast、reduced-motion 和 performance 检查；Act 修正偏差，只将确认的设计决策更新到唯一 owner。
+- 交付时列出页面与 viewport、改前/改后截图或可复现的观察记录、发现与修正、未执行项及原因。自动 gate、源码检查和文档验收不能代替视觉判断；仅治理初始化时将 UI 渲染验收标为未执行。
+
 ## 项目记忆协议
 
 - 本节是项目记忆协议唯一 owner；`docs/ai/project-memory.md` 是统一入口与路由索引，领域细则可在 `docs/ai/project-memory/*.md`（或项目等价 `doc/ai/...` 路径）分册。

@@ -42,6 +42,7 @@ Existing Project 保留已有约定。若已经存在等价文档，将模板 co
 - 定义 memory CRUD、正常结束边界、单一 owner 和写回验证。
 - 定义 L0 轻路径：纯解释、单文件 typo、无关业务重命名时可跳过 engineering-discipline 全文、design-system 与完整项目记忆。
 - 定义按域读取与写回：先读记忆入口，再只读相关分册；领域事实写入对应 `--memory` owner，禁止默认全量读取。
+- 定义 UI 任务的 skill 路由与 PDCA 门禁：按页面用途选用 `design-taste-frontend` 和 `impeccable`，保留品牌与项目 Design System 优先级；L0 与非 UI 任务跳过。具体视觉目标和证据只保存在 design-system owner。
 
 ### `project-context.md`
 
@@ -69,6 +70,8 @@ Existing Project 保留已有约定。若已经存在等价文档，将模板 co
 - Empty Project 记录用户确认的初始决策。
 - 只有多个真实业务域或单文件明显影响按需读取时才拆分。
 - L0 与非 UI 任务不读取本文件。
+- 有 UI 时按 `ui-design-quality.md` 记录页面用途、视觉目标、两个 skill 的实际入口/可用性、适用范围、冲突及视觉验收证据；无 UI 时标为 `NOT_APPLICABLE`，不生成虚构规范。
+- 已有 `DESIGN.md` 或等价视觉规范时合并到该 owner 并调整引用，不另建平行文件；已有 `PRODUCT.md` 和 surface brief 保留其职责并引用。外部 skill 的 context/document 输出同样遵守此 owner 边界。
 
 ### `project-memory.md`
 

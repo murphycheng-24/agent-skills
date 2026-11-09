@@ -20,6 +20,8 @@
 | API        | wrapper、contract、mock、调用方              | 区分服务端 contract 与 UI model    |
 | 状态管理   | store、context、composable、组件状态         | 只记录实际使用模式                 |
 | 设计系统   | token、全局样式、组件库、页面、设计稿、截图  | 区分已实现、期望、偏差和未知       |
+| UI 路由    | 实际页面用途、品牌约束、视觉 owner、已有 PRODUCT.md | 按页面区分 Persuade/Experience/Operate/Read，纯 backend 不适用 |
+| UI skills  | 目标环境发现的 design-taste-frontend、impeccable 的 SKILL.md 与适用范围 | 记录 AVAILABLE/MISSING/NOT_APPLICABLE、实际路径或缺失说明，不推断已安装即可运行 |
 | Agent 治理 | AGENTS、CLAUDE、Cursor rules、已有 skills    | 确定 owner，删除重复规则           |
 | 记忆       | 项目记忆、ADR、规范、Git history             | 只保留当前有效事实和必要路由       |
 | Runtime    | CLI、MCP、hooks、CI、secret scanner          | 标明 L1/L2/L3，不虚构硬保障        |
@@ -55,6 +57,8 @@ README 可用于理解项目意图，但涉及路径、命令和实现的结论�
 8. 业务页面和复用组件之间的差异。
 
 每条现状结论保留文件路径或设计证据；没有证据时写入“未定义”，不要补成最佳实践。
+
+有 UI 时按 `references/ui-design-quality.md` 发现外部 skills，记录其可读路径、适用页面、launcher/runtime 缺口及既有视觉 owner。核对截图对应的 route、theme、viewport 和新鲜度；过期截图不能覆盖当前 token/组件证据。治理初始化只采集证据并建立规则，实际 UI 变更才执行渲染、responsive、keyboard/focus/contrast、状态及 performance 验收。
 
 ## Empty Project 阻断输入
 

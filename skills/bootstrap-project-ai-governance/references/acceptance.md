@@ -29,6 +29,9 @@
 18. `AGENTS.md` 定义 L0 轻路径，以及「入口 + 相关分册」的按域读取/写回协议；未命中 L0 时不得默认要求读全部分册。
 19. 若已按域拆分：根入口是路由索引且不含大段单一领域细则；每个分册有独立数据块；路由表链接有效；跨分册无重复完整结论。
 20. 维护 Skill 要求输出事实数、估算 token 和按域体积；用户明确要求拆分时允许未超阈值拆分。
+21. 有 UI 时，`AGENTS.md` 按实际页面用途路由；外部 skills 标明 `AVAILABLE`、`MISSING` 或 `NOT_APPLICABLE`，可用项有实际路径，缺失项无伪造链接。品牌、既有视觉 owner 与组件优先；纯 backend 为不适用，不为此安装依赖或启用 hook。
+22. UI 治理包含 `references/ui-design-quality.md` 的 PDCA 输入、输出和验证要求，沿用唯一视觉 owner 并引用已有产品 context；治理初始化未顺带修改 UI，未复制外部 scripts/assets 或自动下载、升级工具，launcher 未运行时未声称工具验收通过。
+23. 实际 UI 变更提供页面模式、改前/改后渲染或截图证据、responsive、keyboard/focus/contrast、loading/empty/error/disabled 等状态与 performance 的适用检查，以及差异和未执行原因；taste gate 结果与视觉判断分别报告，文档验收不等于视觉通过。仅初始化治理时这些实测项标为未执行，缺失 skill 时仍报告可完成的设计评审。
 
 ## Smoke Test
 
@@ -48,6 +51,7 @@
 | 完成率     | 每个治理组成部分的完成比例                 |
 | 迁移矩阵   | 文件、动作、owner、证据、结果              |
 | 设计系统   | 实现、决策、偏差、未知                     |
+| UI 方法论  | 页面模式、skill 状态/实际路径/缺口、唯一视觉 owner、PDCA、视觉与工具验收及未执行项；纯 backend 不适用 |
 | 记忆系统   | protocol、CRUD、冲突、安全、事件、E2E、按域读取/拆分、L0 |
 | Git 治理   | contract、owner、证据、G1/G2/G3、冲突      |
 | Agent 接入 | Codex、Claude、Cursor、其他工具及 L1/L2/L3 |

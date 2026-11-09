@@ -7,7 +7,7 @@ description: Analyze an existing, scaffolded, or empty software repository and e
 
 为软件仓库建立可验证、可维护、跨 Agent 的工程约束与项目记忆体系。根据仓库证据生成内容，不把模板占位符或推测写成事实。
 
-方法论版本：`0.3`。这是生产化基线，不代表所有 Agent 已达到 lifecycle hook 级硬保障。
+方法论版本：`0.3.1`。这是生产化基线，不代表所有 Agent 已达到 lifecycle hook 级硬保障。
 
 ## 必读资源
 
@@ -19,6 +19,8 @@ description: Analyze an existing, scaffolded, or empty software repository and e
 4. `references/runtime-memory.md`：建立可执行记忆 contract、CLI 和支持等级。
 5. `references/acceptance.md`：实施前矩阵和最终验收。
 
+项目包含 UI，或本次需要建立 UI 治理时，另读 `references/ui-design-quality.md`：按页面用途选择外部 skill、处理品牌冲突并区分文档与视觉验收。纯 backend 标为不适用。
+
 使用 `assets/templates/` 作为输出骨架，不得机械覆盖现有文件。
 
 ## 成功标准
@@ -27,6 +29,7 @@ description: Analyze an existing, scaffolded, or empty software repository and e
 - 空项目只把用户明确选择或本方法明确规定的默认基线写成初始决策；缺少阻断性输入时先询问。
 - `AGENTS.md` 是治理协议 owner，工具专属入口保持为薄引用。
 - coding-style、project context、design system 和 project memory 各有单一 owner。
+- UI 治理按页面用途路由，记录外部 skill 的实际可用性；品牌与项目视觉 owner 优先，治理初始化不顺带修改 UI。
 - commit message 由 coding-style 持有；规则有仓库证据或明确基线，执行等级不高于 hook/CI 实际能力。
 - 项目记忆支持 `ADD`、`UPDATE`、`DELETE`、`NOOP`，历史由 Git 保存。
 - project-memory protocol v0.2 通过统一 CLI 执行 CRUD、结构校验、baseHash 冲突拒绝和本地事件记录。
@@ -90,6 +93,7 @@ CLAUDE.md
 
 ### 5. 生成设计系统
 
+- 有 UI 时按 `references/ui-design-quality.md` 补充页面模式、外部 skill 路由和后续 UI 变更的视觉验收；沿用既有 design-system 或 `DESIGN.md` owner，已有 `PRODUCT.md` 只引用，不建立平行规范。
 - `EXISTING`：从 token、CSS/SCSS、Tailwind、组件库、页面源码、设计稿和截图提取；区分已实现、已确认期望、已知偏差和未定义。
 - `SCAFFOLDED`：同时记录 scaffold 已实现部分和用户确认的初始决策。
 - `EMPTY`：依据产品与品牌输入生成初始规范，并明确标记为决策而非现状总结。
@@ -141,7 +145,7 @@ Existing Project 没有 v0.2 数据块时只输出迁移矩阵；未经确认不
 1. 项目模式与证据摘要。
 2. 文件迁移矩阵。
 3. 已生成或更新的文件。
-4. design system 的证据、决策、偏差和未知项。
+4. design system 的证据、决策、偏差和未知项；UI 页面模式、skill 可用性与实际路径、验收结果或未执行原因（纯 backend 为不适用）。
 5. memory lifecycle 与 Agent 接入结果。
 6. Git commit contract、执行等级及证据。
 7. formatter、测试、构建、链接和 diff 验证。
